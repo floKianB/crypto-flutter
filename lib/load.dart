@@ -6,13 +6,10 @@ class Load extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SpinKitWave(
-          color: Colors.blue[600],
-          size: 70,
-        ),
-      ),
-    );
+    return SpinKitWave(
+        color: Colors.blue[600],
+        size: 70,
+      );
+      
   }
 }

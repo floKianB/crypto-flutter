@@ -29,17 +29,17 @@ class _ApplicationState extends State<Application> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        backgroundColor: Color(0xff080233),
         body: SafeArea(
           child: Content(),
         ),
-      ),
+      )
     );
   }
 
   Content(){
     if(!loaded){
       return Load();
-
     } else {
       return ListOfCryptos(list: list);
     }
