@@ -28,12 +28,7 @@ class _ApplicationState extends State<Application> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        backgroundColor: Color(0xff080233),
-        body: SafeArea(
-          child: Content(),
-        ),
-      )
+      home: Content(),
     );
   }
 

@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:crypto/model/crypto.dart';
 
@@ -16,16 +17,61 @@ class _ListOfCryptosState extends State<ListOfCryptos> {
     list = widget.list;
   }
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: list!.length,
-      itemBuilder: (context, index) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: _getCryptoItems(list![index]),
-        );
-      },
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Flo Crypto",
+          style: TextStyle(
+            fontSize: 28,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: Color(0xff080233),
+      ),
+      backgroundColor: Color(0xff080233),
+      body: SafeArea(
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+          Container(
+            decoration: BoxDecoration(
+              color: Color(0xff080233),
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+            child: TextField(
+              onChanged: (value) => { _search(value) },
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+              ),
+              decoration: InputDecoration(
+                enabledBorder: InputBorder.none,
+                hintText: "Search ...",
+                hintStyle: TextStyle(
+                  color: Color.fromARGB(255, 167, 166, 166),
+                  fontSize: 20,
+                ),
+              ),
+            ),
+          ),
+
+        Expanded(
+          child: ListView.builder(
+            itemCount: list!.length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  child: _getCryptoItems(list![index]),
+              );
+            },
+          ),
+        ),
+      ],)
+      ),
     );
   }
+
+
   _getCryptoItems(crypto){
     return ListTile(
       shape: RoundedRectangleBorder(
@@ -39,7 +85,7 @@ class _ListOfCryptosState extends State<ListOfCryptos> {
           child: Text(
             crypto.rank.toString(),
             style: TextStyle(
-              fontSize: 18,
+              fontSize: 22,
               color: Colors.white,
             ),
             )
@@ -109,5 +155,28 @@ class _ListOfCryptosState extends State<ListOfCryptos> {
         color: Colors.red,
       );
     }
+  }
+
+  Future<void> _search(String enteredKeyword) async {
+    List<Crypto> cryptoResultList = [];
+    if (enteredKeyword.isEmpty) {
+      var result = await _getData();
+      setState(() {
+        list = result;
+      });
+      return;
+    }
+    cryptoResultList = list!.where((element) {
+      return element.name.toLowerCase().contains(enteredKeyword.toLowerCase());
+    }).toList();
+
+    setState(() {
+      list = cryptoResultList;
+    });
+  }
+
+  Future<List<Crypto>> _getData() async {
+    var response = await Dio().get('https://api.coincap.io/v2/assets');
+    return response.data['data'].map<Crypto>((recivedJson) => Crypto.fromMap(recivedJson)).toList();
   }
 }
